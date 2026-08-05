@@ -95,7 +95,7 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
       card.style.transform = FULL;
       card.style.borderRadius = "0px";
     }
-    const ind = indicatorRef.current;
+    const ind = gestureTargetRef?.current;
     if (ind) {
       ind.style.transition = `transform ${OPEN_MS}ms ${SPRING}`;
       ind.style.transform = "scaleX(1)";
@@ -114,14 +114,14 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
     card.style.transition = "none";
     card.style.transform = `scale(${scale})`;
     card.style.borderRadius = `${progress * 30}px`;
-    const ind = indicatorRef.current;
+    const ind = gestureTargetRef?.current;
     if (ind) {
       ind.style.transition = "none";
       ind.style.transform = `scaleX(${1 - progress * 0.25})`;
     }
   };
 
-  const onPointerDown = (e: React.PointerEvent) => {
+  const onPointerDown = (e: PointerEvent) => {
     if (!interactive || closed.current) return;
     const g = gesture.current;
     g.active = true;
@@ -135,7 +135,7 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
     (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
   };
 
-  const onPointerMove = (e: React.PointerEvent) => {
+  const onPointerMove = (e: PointerEvent) => {
     const g = gesture.current;
     if (!g.active || closed.current) return;
     const now = performance.now();
@@ -164,6 +164,25 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
     else settleBack();
   };
 
+  // Bind the gesture to the home-screen indicator (the app has no bar of its own).
+  useEffect(() => {
+    const el = gestureTargetRef?.current;
+    if (!el) return;
+    const down = (e: PointerEvent) => onPointerDown(e);
+    const move = (e: PointerEvent) => onPointerMove(e);
+    const up = () => onPointerUp();
+    el.addEventListener("pointerdown", down);
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+    return () => {
+      el.removeEventListener("pointerdown", down);
+      el.removeEventListener("pointermove", move);
+      el.removeEventListener("pointerup", up);
+      el.removeEventListener("pointercancel", up);
+    };
+  });
+
   if (!mounted) return null;
 
   return createPortal(
@@ -188,27 +207,6 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
           style={{ pointerEvents: interactive ? "auto" : "none" }}
           sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
           referrerPolicy="no-referrer"
-        />
-      </div>
-
-      {/* home-indicator gesture area */}
-      <div
-        role="button"
-        tabIndex={0}
-        aria-label="Yopish uchun yuqoriga suring"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onKeyDown={(e) => {
-          if (e.key === "Escape" || e.key === "Enter") animateClose();
-        }}
-        className="absolute inset-x-0 bottom-0 z-10 flex touch-none select-none items-end justify-center bg-gradient-to-t from-black/55 to-transparent pb-[max(env(safe-area-inset-bottom),7px)]"
-        style={{ height: `calc(${BAR}px + env(safe-area-inset-bottom))` }}
-      >
-        <div
-          ref={indicatorRef}
-          className="h-[5px] w-[8.4rem] rounded-full bg-white/90 will-change-transform"
         />
       </div>
     </div>,
