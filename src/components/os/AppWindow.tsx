@@ -95,7 +95,7 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
       card.style.transform = FULL;
       card.style.borderRadius = "0px";
     }
-    const ind = gestureTargetRef?.current;
+    const ind = gestureTargetRef?.current?.firstElementChild as HTMLElement | null;
     if (ind) {
       ind.style.transition = `transform ${OPEN_MS}ms ${SPRING}`;
       ind.style.transform = "scaleX(1)";
@@ -114,7 +114,7 @@ export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
     card.style.transition = "none";
     card.style.transform = `scale(${scale})`;
     card.style.borderRadius = `${progress * 30}px`;
-    const ind = gestureTargetRef?.current;
+    const ind = gestureTargetRef?.current?.firstElementChild as HTMLElement | null;
     if (ind) {
       ind.style.transition = "none";
       ind.style.transform = `scaleX(${1 - progress * 0.25})`;

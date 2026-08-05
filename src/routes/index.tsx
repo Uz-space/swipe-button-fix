@@ -157,11 +157,11 @@ function Home() {
 
       {/* single home indicator — also the swipe-up-to-close gesture area */}
       <div
+        ref={indicatorRef}
         className="fixed inset-x-0 bottom-0 z-[60] flex touch-none select-none items-end justify-center pb-[max(env(safe-area-inset-bottom),7px)]"
         style={{ height: "calc(30px + env(safe-area-inset-bottom))" }}
       >
         <div
-          ref={indicatorRef}
           className={`h-[5px] w-[8.4rem] rounded-full will-change-transform ${
             active ? "bg-white/90" : "bg-os-on-wallpaper/70"
           }`}
