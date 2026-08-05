@@ -163,7 +163,9 @@ function Home() {
       >
         <div
           className={`h-[5px] w-[8.4rem] rounded-full will-change-transform ${
-            active ? "bg-white/90" : "bg-os-on-wallpaper/70"
+            active
+              ? "bg-[oklch(0.2_0_0/0.55)] shadow-[0_0_0_1px_oklch(1_0_0/0.5)] mix-blend-normal"
+              : "bg-os-on-wallpaper/70"
           }`}
         />
       </div>
