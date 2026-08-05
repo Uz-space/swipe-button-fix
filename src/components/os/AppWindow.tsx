@@ -33,6 +33,11 @@ function poseFromRect(rect: OriginRect | null | undefined): Pose {
   return { x, y, s, r: ICON_RADIUS / s, o: 0 };
 }
 
+/** closing pose: shrink toward the centre of the screen (no icon flight) */
+function centerPose(): Pose {
+  return { x: 0, y: 0, s: 0.82, r: 34, o: 0 };
+}
+
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export function AppWindow({ app, origin, onClose, gestureTargetRef }: Props) {
@@ -110,7 +115,7 @@ export function AppWindow({ app, origin, onClose, gestureTargetRef }: Props) {
     closed.current = true;
     const card = cardRef.current;
     if (!card) return onClose();
-    const to = poseFromRect(origin);
+    const to = centerPose();
     // faster flick -> shorter, snappier flight (iOS scales duration with velocity)
     const ms = Math.max(220, Math.min(CLOSE_MS, CLOSE_MS - velocity * 180));
     card.style.transition = `transform ${ms}ms ${SPRING}, border-radius ${ms}ms ${SPRING}, opacity ${ms * 0.85}ms ease-out`;
@@ -170,9 +175,9 @@ export function AppWindow({ app, origin, onClose, gestureTargetRef }: Props) {
       // rubber band: the further you pull, the less it moves
       const pulled = vh * 0.42 * (1 - Math.exp(-up / (vh * 0.42)));
       const progress = Math.min(1, pulled / (vh * 0.42));
-      const to = poseFromRect(origin);
+      const to = centerPose();
       target.current = {
-        x: (e.clientX - s.startX) * 0.35 * progress + to.x * progress * 0.35,
+        x: 0,
         y: -pulled * 0.55,
         s: lerp(1, Math.max(to.s, 0.28), progress * 0.85),
         r: lerp(0, 34, Math.min(1, progress * 2)),
