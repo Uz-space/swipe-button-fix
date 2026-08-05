@@ -132,6 +132,49 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* ── WebOS design system ─────────────────────────────────────── */
+:root {
+  --os-wallpaper:
+    radial-gradient(120% 80% at 15% 8%, oklch(0.62 0.19 25 / 0.75), transparent 60%),
+    radial-gradient(110% 75% at 88% 12%, oklch(0.68 0.17 55 / 0.65), transparent 62%),
+    radial-gradient(130% 90% at 50% 100%, oklch(0.42 0.16 285 / 0.85), transparent 70%),
+    linear-gradient(170deg, oklch(0.24 0.07 275), oklch(0.14 0.04 268));
+  --os-glass: oklch(1 0 0 / 0.14);
+  --os-glass-strong: oklch(0.22 0.03 270 / 0.72);
+  --os-glass-border: oklch(1 0 0 / 0.22);
+  --os-on-wallpaper: oklch(0.99 0 0);
+  --os-shadow: 0 18px 40px -12px oklch(0.1 0.03 270 / 0.7);
+  --os-icon-radius: 1.4rem;
+}
+
+@theme inline {
+  --color-os-glass: var(--os-glass);
+  --color-os-glass-strong: var(--os-glass-strong);
+  --color-os-glass-border: var(--os-glass-border);
+  --color-os-on-wallpaper: var(--os-on-wallpaper);
+  --shadow-os: var(--os-shadow);
+  --radius-icon: var(--os-icon-radius);
+}
+
+@utility os-wallpaper {
+  background: var(--os-wallpaper);
+  background-attachment: fixed;
+}
+
+@utility os-glass {
+  background-color: var(--os-glass);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--os-glass-border);
+}
+
+@utility os-sheet {
+  background-color: oklch(0.24 0.03 270 / 0.94);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid oklch(1 0 0 / 0.2);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -140,5 +183,58 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+}
+
+@keyframes os-jiggle {
+  0%, 100% { transform: rotate(-1.1deg); }
+  50% { transform: rotate(1.1deg); }
+}
+
+@utility os-jiggle {
+  animation: os-jiggle 0.32s ease-in-out infinite;
+}
+
+@utility os-range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 1.1rem;
+  border-radius: 999px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border: 1px solid oklch(1 0 0 / 0.22);
+  box-shadow: inset 0 1px 3px oklch(0 0 0 / 0.45);
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 999px;
+    background: oklch(0.99 0 0);
+    border: 2px solid oklch(0.99 0 0);
+    box-shadow: 0 0 0 1px oklch(0 0 0 / 0.2), 0 2px 5px oklch(0 0 0 / 0.4);
+  }
+
+  &::-moz-range-thumb {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 999px;
+    background: oklch(0.99 0 0);
+    border: 2px solid oklch(0.99 0 0);
+    box-shadow: 0 0 0 1px oklch(0 0 0 / 0.2), 0 2px 5px oklch(0 0 0 / 0.4);
+  }
+
+  &:active::-webkit-slider-thumb {
+    transform: scale(1.04);
+  }
+
+  &:active::-moz-range-thumb {
+    transform: scale(1.04);
   }
 }
