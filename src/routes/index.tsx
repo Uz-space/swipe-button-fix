@@ -162,11 +162,7 @@ function Home() {
         style={{ height: "calc(30px + env(safe-area-inset-bottom))" }}
       >
         <div
-          className={`h-[5px] w-[8.4rem] rounded-full will-change-transform ${
-            active
-              ? "bg-[oklch(0.2_0_0/0.55)] shadow-[0_0_0_1px_oklch(1_0_0/0.5)] mix-blend-normal"
-              : "bg-os-on-wallpaper/70"
-          }`}
+          className="h-[5px] w-[8.4rem] rounded-full bg-os-on-wallpaper/70 will-change-transform"
         />
       </div>
 
