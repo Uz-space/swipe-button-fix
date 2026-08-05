@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, X, Pencil, Check, Palette } from "lucide-react";
 import { useApps, type AppEntry } from "@/lib/apps-store";
@@ -81,6 +81,7 @@ function Home() {
   const [origin, setOrigin] = useState<OriginRect | null>(null);
   const [wallpaperOpen, setWallpaperOpen] = useState(false);
   const { wallpaper, update: updateWallpaper } = useWallpaper();
+  const indicatorRef = useRef<HTMLDivElement>(null);
 
   return (
     <main
@@ -150,10 +151,21 @@ function Home() {
           </div>
         </div>
 
-        {/* home indicator (hidden while an app is open — the app shows its own) */}
-        <div className="flex h-[calc(env(safe-area-inset-bottom)+1.5rem)] items-center justify-center">
-          {!active && <div className="h-[5px] w-[8.4rem] rounded-full bg-os-on-wallpaper/70" />}
-        </div>
+        {/* spacer for the fixed home indicator */}
+        <div className="h-[calc(env(safe-area-inset-bottom)+1.5rem)]" />
+      </div>
+
+      {/* single home indicator — also the swipe-up-to-close gesture area */}
+      <div
+        className="fixed inset-x-0 bottom-0 z-[60] flex touch-none select-none items-end justify-center pb-[max(env(safe-area-inset-bottom),7px)]"
+        style={{ height: "calc(30px + env(safe-area-inset-bottom))" }}
+      >
+        <div
+          ref={indicatorRef}
+          className={`h-[5px] w-[8.4rem] rounded-full will-change-transform ${
+            active ? "bg-white/90" : "bg-os-on-wallpaper/70"
+          }`}
+        />
       </div>
 
       <AddAppSheet open={sheetOpen} onClose={() => setSheetOpen(false)} onAdd={addApp} />
@@ -162,6 +174,7 @@ function Home() {
           key={active.id}
           app={active}
           origin={origin}
+          gestureTargetRef={indicatorRef}
           onClose={() => setActive(null)}
         />
       )}
