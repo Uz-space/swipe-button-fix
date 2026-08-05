@@ -8,9 +8,10 @@ type Props = {
   app: AppEntry;
   origin?: OriginRect | null;
   onClose: () => void;
+  /** Home-screen indicator that drives the swipe-up-to-close gesture. */
+  gestureTargetRef?: React.RefObject<HTMLElement | null>;
 };
 
-const BAR = 30; // gesture area height (px)
 const SPRING = "cubic-bezier(.32,.72,0,1)";
 const OPEN_MS = 380;
 const CLOSE_MS = 340;
@@ -19,9 +20,8 @@ const CLOSE_MS = 340;
 const MINI = "scale(0.86)";
 const FULL = "scale(1)";
 
-export function AppWindow({ app, onClose }: Props) {
+export function AppWindow({ app, onClose, gestureTargetRef }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const indicatorRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
   const [interactive, setInteractive] = useState(false);
   const [mounted, setMounted] = useState(false);
